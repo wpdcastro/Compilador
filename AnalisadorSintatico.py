@@ -1,42 +1,64 @@
 #cadeia = input ("Dada uma gramatica, insira uma linha de comando:")
 #frase = cadeia.split ()
+from tabulate import tabulate
 
 cadeias = {
     "E": {
-          "id": "TS", "num": "TS", "+": "", "-": "", "*": "", "/": "", "(": "E --> TS", ")": "", "$":""
+            "id": ["T","S"], "num": ["T","S"], "+": []   , "-" : []   , "*":  [], "/": [], "(": ["T","S"], ")": [], "$":[]
          },
     "T": {
-        "id": "T --> FG", "num": "T --> FG", "+": "", "-" : "", "*" : "","/": "", "(": "T --> FG", ")": "", "$": ""
+            "id": ["F","G"], "num": ["F","G"], "+": []   , "-" : []   , "*" : [], "/": [], "(": ["F","G"], ")": [], "$": []
          },
     "S": {
-        "id": "S --> FG","num": "T --> FG", "+": "", "-": "", "*" : "","/": "","(": "T --> FG", ")": "", "$": ""
+            "id": ["F","G"] ,"num": ["F","G"], "+": []   , "-" : []   , "*" : [], "/": "", "(": ["F","G"], ")": [], "$": []
          },
     "G": {
-        "id":"","num": "", "+": "G --> y", "-": "G --> y", "*" : "G --> *FG", "/" : "/FG", "(" : "", ")" : "G --> y", "$": "G --> y"
+            "id": []        ,"num": []       , "+": ["y"], "-" : ["y"], "*" : ["*","F","G"], "/" : ["/","F","G"], "(" : [], ")" : ["y"], "$": ["y"]
          },
     "F": {
-        "id": "F --> id", "num": "F --> num", "+": "", "-": "", "*" : "","/": "", "(": "T --> (E)", ")": "", "$": ""
-         }
+            "id": ["id"]    , "num": ["num"] , "+": []   , "-" : []   , "*" : [""],"/": [""], "(": ["(E)"], ")": [""], "$": [""]
+         } 
 }
 
 cadeia = ["id", "+", "num", "*", "id"]
 pilha  = ["E"]
 regra  = ""
+corpo = []
 
-print("Pilha |      Cadeia                   | Regras   |")
+while (len(cadeia) > 0) :
 
-
-ok = "false"
-
-while (ok == "ok") :
-    #pegar o topo da pilha
     topo_pilha = pilha[-1]
     topo_token = cadeia[-1]
 
-    regra = cadeias[topo_pilha][topo_token]
-    teste = "ok"
-    print(pilha, "|" , cadeia, "|", topo_pilha + " --> " + regra)
-    
-    for caracter in regra:
-        pilha.append(caracter)
-        print(pilha)
+    if (topo_pilha == topo_token) :
+
+        cadeia.pop(0)
+        pilha.pop()
+        regra = " - - -"
+
+        corpo.append([pilha,cadeia,regra])
+
+    else :
+        
+        regra = cadeias[topo_pilha][topo_token]
+
+        if (len(regra) == 0) :
+            regra = ["ERRO"]
+            cadeia = []
+
+        new_stack = pilha
+        corpo.append([new_stack,cadeia,regra])
+
+        pilha.pop()
+
+        regra_aux = []
+
+        for caracter in regra:
+            regra_aux.insert(0,caracter)
+
+        pilha = pilha + regra_aux
+
+
+tabela = ["pilha" , "cadeia", "regra"]
+
+print(tabulate(corpo,tabela,tablefmt="grid"))
