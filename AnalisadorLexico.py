@@ -31,6 +31,7 @@ class AnalisadorLexico():
         for token in frase:
             token_lower = token.lower() 
             token_lower = self.remover_acentos(token_lower)
+            
             if token_lower in self.reservados:
                 simbolo = "Sintoma"
                 linha_tokenizado = [linha,token,simbolo]
